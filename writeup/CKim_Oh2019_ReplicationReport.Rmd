@@ -24,29 +24,41 @@ This reproduction study will be conducted using Amazon Mechanical Turk (MTurk) t
 
 ###Power Analysis
 
+[This section will be completed later, as per the assignment instructions, since power analyses will be covered in class next week.]
+
 Original effect size, power analysis for samples to achieve 80%, 90%, 95% power to detect that effect size.  Considerations of feasibility for selecting planned sample size.
 
 ###Planned Sample
 
-Planned sample size and/or termination rule, sampling frame, known demographics if any, preselection rules if any.
+The original study included 30 participants with an intrarater reliability score greater than 0 (see procedure section for more details). The same sample size will be planned for this replication report. The original study ended up including 31 participants total because 1 participant had an intrarater reliability score of 0. For this replication study, enough participants will be recruited - and the study will remain open - until 30 participants with an intrarater reliability score greater than 0 participate. The original study did not specify known demographics or preselection rules. For this replication study, the typical MTurk qualifications (located in US, HIT approval rate greater than 97%, and greater than 5000 number of HITs approved) will be used.
 
 ###Materials
 
-All materials - can quote directly from original article - just put the text in quotations and note that this was followed precisely.  Or, quote directly and just point out exceptions to what was described in the original article.
+"We used both the face images manipulated by the competence model and the face images manipulated by the difference model. This created a combined pool of 350 face-image stimuli (2 models × 25 identities × 7 manipulation levels)." The same materials from the original study, quoted above, will be followed for this replication study.
 
 ###Procedure	
 
-Can quote directly from original article - just put the text in quotations and note that this was followed precisely.  Or, quote directly and just point out exceptions to what was described in the original article.
+"Participants were asked to make a forced choice of perceived gender for each face. All participants were exposed to faces from both the competence and difference models. Two versions of the study with the same length were created: Half of the participants were presented with 88 competence-model faces and 87 difference-model faces, whereas the other half were presented with 87 competence-model faces and 88 difference-model faces. There was no overlap in the face images between the two versions of the study.
+
+The 175 chosen stimuli were presented in random order to each participant. For each stimulus, the question asked was “What is the gender of this person?” presented with two options: male or female. Left and right arrow keys were used to indicate one or the other gender, and the gender–key mapping was counterbalanced. Before the experiment began, each participant was told to rely on gut instinct, not to spend too much time on each face, and that there were no right or wrong answers. Participants were given unlimited time.
+
+To assess intrarater reliability, we added 25 repeated trials randomly chosen from the first 175 trials in each study, bringing the total number of trials to 200. As we did in the previous experiments, we excluded the responses of participants with test-retest reliability less than or equal to 0: 1 participant. We recruited an additional participant so that we had 30 participants with test-retest reliability greater than 0." The same procedure from the original study, quoted above, will be followed for this replication study.
 
 ###Analysis Plan
 
-Can also quote directly, though it is less often spelled out effectively for an analysis strategy section.  The key is to report an analysis strategy that is as close to the original - data cleaning rules, data exclusion rules, covariates, etc. - as possible.  
+In this study, participants are asking to assign binary gender - male or female - to computer-generated face images that have been manipulated either according to the competence model or the difference model. Participants are excluded if their intrarater reliability score is 0 (see procedure section above).
 
-**Clarify key analysis of interest here**  You can also pre-specify additional analyses you plan to do.
+The first analysis that will be done is conducting a t-test to determine whether the proportion of "male" responss to all faces averaged across participants was significantly different from 0.5.
+
+The second analysis will involve plotting the mean proportion of "male" responses as a function of the level of the difference-model manipulation and the competence-model manipulation. The graph will be fitted with a sigmoid function for the response averaged across participants with error bars denoting standard errors.
+
+The third analysis will be conducting a "7 (manipulation level) × 2 (model type) repeated measures analysis of variance on the proportion of “male” responses for each face" to "test whether the perceived gender of faces tracked the model manipulations." 
+
+**Clarify key analysis of interest here**  The key analysis of interest is the second analysis described above in which the mean proportion of "male" responses will be plotted as a function of the difference and competence-model manipulations. A sigmoid function will be fitted to the resulting plot with error bars indicating standard errors. There will be a single plot generated with the responses averaged across participants. This graph will essentially be a replication of the original paper's Figure 4, which was the key figure for the experiment being replicated.
 
 ###Differences from Original Study
 
-Explicitly describe known differences in sample, setting, procedure, and analysis plan from original study.  The goal, of course, is to minimize those differences, but differences will inevitably occur.  Also, note whether such differences are anticipated to make a difference based on claims in the original article or subsequent published research on the conditions for obtaining the effect.
+The procedure, analysis plan, and setting of MTurk will exactly follow the original study. A difference, however, will likely be the participants' demographics. The original study did not specify any particular restrictions for excluding MTurk workers from participating. As such, this replication study will follow the standard MTurk qualifications (located in the US, HIT approval rate greater than 97%, and greater than 5000 HITs approved). Other than these qualifications, the study will be open to any MTurk workers who agree to participate. In the original study, "thirty-one MTurk workers (22 men, 9 women; age: M = 36.32 years, range = 20–58) participated." One of these MTurk workers was excluded from analysis because their intrarater reliability score was equal to 0 (refer to procedure section). When recruiting participants for this replication report, the same demographics in terms of age range and gender breakdown may not be the same. As the original study cited, prior research has shown that "people evaluate men as more competent and more confident than women, on average" and that the "association between men and competence, confidence, and semanitically similar traits (e.g. independence, inventiveness) are held across diverse cultures." As such, although  the  demographics of MTurk workers will likely not be precisely the same for this replication study, it is anticipated that this difference will not drastically influence the outcomes of the study.
 
 ### Methods Addendum (Post Data Collection)
 
