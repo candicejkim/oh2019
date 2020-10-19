@@ -24,9 +24,11 @@ This reproduction study will be conducted using Amazon Mechanical Turk (MTurk) t
 
 ###Power Analysis
 
-[This section will be completed later, as per the assignment instructions, since power analyses will be covered in class next week.]
+The original effect size was eta-squared = 0.88 (p < .001) with F = 464.32 for a repeated measures ANOVA test. The authors' power anaysis was conducted using G*Power 3.1.9, which calculated that a "sample size of at least 26 participants would afford 95% power to detect a small to medium effect (f = .25) of the main effects of manipulation level and model type, as well as the interaction between the two."
 
-Original effect size, power analysis for samples to achieve 80%, 90%, 95% power to detect that effect size.  Considerations of feasibility for selecting planned sample size.
+Original effect size, power analysis for samples to achieve 80%, 90%, 95% power to detect that effect size. Considerations of feasibility for selecting planned sample size.
+
+[I will be going to office hours this week for help with using G*Power to complete this section.]
 
 ###Planned Sample
 
@@ -35,6 +37,8 @@ The original study included 30 participants with an intrarater reliability score
 ###Materials
 
 "We used both the face images manipulated by the competence model and the face images manipulated by the difference model. This created a combined pool of 350 face-image stimuli (2 models × 25 identities × 7 manipulation levels)." The same materials from the original study, quoted above, will be followed for this replication study.
+
+[Paradigm](https://stanforduniversity.qualtrics.com/jfe/form/SV_2mhyDSzzzr2q2Il)
 
 ###Procedure	
 
@@ -52,7 +56,9 @@ The first analysis that will be done is conducting a t-test to determine whether
 
 The second analysis will involve plotting the mean proportion of "male" responses as a function of the level of the difference-model manipulation and the competence-model manipulation. The graph will be fitted with a sigmoid function for the response averaged across participants with error bars denoting standard errors.
 
-The third analysis will be conducting a "7 (manipulation level) × 2 (model type) repeated measures analysis of variance on the proportion of “male” responses for each face" to "test whether the perceived gender of faces tracked the model manipulations." 
+The third analysis will be conducting a "7 (manipulation level) × 2 (model type) repeated measures analysis of variance on the proportion of “male” responses for each face" to "test whether the perceived gender of faces tracked the model manipulations."
+
+The authors also conducted 7 (manipulation level) × 2 (model type) repeated measure ANOVA tests. The most relevant test for replication was the repeated measure ANOVA testing whether faces that were manipulated to look more competent, regardless of model type, would be more likely to be categorized as male.
 
 **Clarify key analysis of interest here**  The key analysis of interest is the second analysis described above in which the mean proportion of "male" responses will be plotted as a function of the difference and competence-model manipulations. A sigmoid function will be fitted to the resulting plot with error bars indicating standard errors. There will be a single plot generated with the responses averaged across participants. This graph will essentially be a replication of the original paper's Figure 4, which was the key figure for the experiment being replicated.
 
@@ -73,6 +79,7 @@ You can comment this section out prior to final report with data collection.
 
 ##Results
 
+[I am still gathering pilot data. I plan on doing so tomorrow (10/19). Since I do not have data yet, I have not coded the analysis plan. But I will plan on coding this analysis before my midterm presentation on Friday (10/23), so I can show preliminary analyses.]
 
 ### Data preparation
 
