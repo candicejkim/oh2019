@@ -24,15 +24,17 @@ This reproduction study will be conducted using Amazon Mechanical Turk (MTurk) t
 
 ###Power Analysis
 
-The original effect size was eta-squared = 0.88 (p < .001) with F = 464.32 for a repeated measures ANOVA test. The authors' power anaysis was conducted using G*Power 3.1.9, which calculated that a "sample size of at least 26 participants would afford 95% power to detect a small to medium effect (f = .25) of the main effects of manipulation level and model type, as well as the interaction between the two."
+The original effect size was eta-squared = 0.88 (p < .001) with F = 464.32 for a repeated measures ANOVA test. The authors' power analysis was conducted using G*Power 3.1.9, which calculated that a "sample size of at least 26 participants would afford 95% power to detect a small to medium effect (f = .25) of the main effects of manipulation level and model type, as well as the interaction between the two."
 
-Original effect size, power analysis for samples to achieve 80%, 90%, 95% power to detect that effect size. Considerations of feasibility for selecting planned sample size.
-
-[I will be going to office hours this week for help with using G*Power to complete this section.]
+Using similar parameters, as described above, my power analysis using G*Power calculated that I would need a sample size of 28 participants to achieve 95% power, 90% power, and 85% power (sample size did not change).
 
 ###Planned Sample
 
-The original study included 30 participants with an intrarater reliability score greater than 0 (see procedure section for more details). The same sample size will be planned for this replication report. The original study ended up including 31 participants total because 1 participant had an intrarater reliability score of 0. For this replication study, enough participants will be recruited - and the study will remain open - until 30 participants with an intrarater reliability score greater than 0 participate. The original study did not specify known demographics or preselection rules. For this replication study, the typical MTurk qualifications (located in US, HIT approval rate greater than 97%, and greater than 5000 number of HITs approved) will be used.
+The original study included 30 participants with an intrarater reliability score greater than 0 (see procedure section for more details). The same sample size will be planned for this replication report. The original study ended up including 31 participants total because 1 participant had an intrarater reliability score of 0.
+
+For this replication study, ideally enough participants would be recruited - and the study will remain open - until 30 participants with an intrarater reliability score greater than 0 participate. However, given feasibility of cost, I will instead set the total number of participants as 30, providing flexibility of up to 2 participants to be excluded (if they have an intrarater reliability score of 0) and still achieve the desired power as described above.
+
+The original study did not specify known demographics or preselection rules. For this replication study, the typical MTurk qualifications (located in US, HIT approval rate greater than 97%, and greater than 5000 number of HITs approved) will be used.
 
 ###Materials
 
@@ -50,15 +52,13 @@ To assess intrarater reliability, we added 25 repeated trials randomly chosen fr
 
 ###Analysis Plan
 
-In this study, participants are asking to assign binary gender - male or female - to computer-generated face images that have been manipulated either according to the competence model or the difference model. Participants are excluded if their intrarater reliability score is 0 (see procedure section above).
+In this study, participants are asked to assign binary gender - male or female - to computer-generated face images that have been manipulated either according to the competence model or the difference model. Participants are excluded if their intrarater reliability score is 0 (see procedure section above).
 
-The first analysis that will be done is conducting a t-test to determine whether the proportion of "male" responss to all faces averaged across participants was significantly different from 0.5.
+The first analysis the authors conducted was a t-test to determine whether the proportion of "male" responses to all faces averaged across participants was significantly different from 0.5.
 
-The second analysis will involve plotting the mean proportion of "male" responses as a function of the level of the difference-model manipulation and the competence-model manipulation. The graph will be fitted with a sigmoid function for the response averaged across participants with error bars denoting standard errors.
+The second analysis they conducted involved plotting the mean proportion of "male" responses as a function of the level of the difference-model manipulation and the competence-model manipulation. The graph was fitted with a sigmoid function for the response averaged across participants with error bars denoting standard errors.
 
-The third analysis will be conducting a "7 (manipulation level) × 2 (model type) repeated measures analysis of variance on the proportion of “male” responses for each face" to "test whether the perceived gender of faces tracked the model manipulations."
-
-The authors also conducted 7 (manipulation level) × 2 (model type) repeated measure ANOVA tests. The most relevant test for replication was the repeated measure ANOVA testing whether faces that were manipulated to look more competent, regardless of model type, would be more likely to be categorized as male.
+The third analysis they conducted was a "7 (manipulation level) × 2 (model type) repeated measures analysis of variance on the proportion of 'male' responses for each face." The most relevant test for replication was the repeated measures ANOVA on the proportion of "male" responses for each face, comparing when faces were manipulated by the competence model versus the difference model.
 
 **Clarify key analysis of interest here**  The key analysis of interest is the second analysis described above in which the mean proportion of "male" responses will be plotted as a function of the difference and competence-model manipulations. A sigmoid function will be fitted to the resulting plot with error bars indicating standard errors. There will be a single plot generated with the responses averaged across participants. This graph will essentially be a replication of the original paper's Figure 4, which was the key figure for the experiment being replicated.
 
@@ -79,26 +79,287 @@ You can comment this section out prior to final report with data collection.
 
 ##Results
 
-[I am still gathering pilot data. I plan on doing so tomorrow (10/19). Since I do not have data yet, I have not coded the analysis plan. But I will plan on coding this analysis before my midterm presentation on Friday (10/23), so I can show preliminary analyses.]
-
 ### Data preparation
 
 Data preparation following the analysis plan.
-	
+
+### Confirmatory analysis
+
 ```{r include=F}
 ###Data Preparation
 
 ####Load Relevant Libraries and Functions
+library(readr)
+library(tidyverse)
+library(ggplot2)
+library(reshape)
+library(dplyr)
+library(ggpubr)
 
 ####Import data
+d <- read_csv("Oh2019_PilotA.csv")
+
+#### Demographics
+view(d)
+d_demo = d %>% 
+  select(-c("StartDate", "EndDate", "Status", "Progress", "Duration (in seconds)", "Finished", "RecordedDate", "ResponseId", "DistributionChannel", "UserLanguage", "mTurk"))
+
+d_demo <- d_demo[-c(1, 2), ] # remove unnecessary rows
+view(d_demo)
+
+# find number of male and female participants
+n_participants = 3 # number of participants, n=3 for Trial A
+n_male = 0
+n_female = 0
+for (i in 1:n_participants) { # this for loop recodes male/female to 1/0
+  if (d_demo[i, 702] == "Male") {
+    n_male = n_male + 1
+  } else {
+    n_female = n_female + 1
+  }
+}
+print(n_male) # number of male participants
+print(n_female) # number of female participants
+
+# calculate range of age (Q29)
+age_range = range(d_demo$Q29) # find min and max age values
+print(age_range) # print range
+
+# calculate mean of age (Q29)
+age_df <- data.frame(matrix(NA, nrow = n_participants, ncol = 1))
+for (i in 1:n_participants) { # this for loop recodes male/female to 1/0
+  age_df[i,1] = d_demo[i,701]
+}
+
+mean(as.numeric(age_df[,1])) # convert strings into numbers, then report mean
 
 #### Data exclusion / filtering
+d_exclusion = d %>% 
+  select(-c("StartDate", "EndDate", "Status", "Progress", "Duration (in seconds)", "Finished", "RecordedDate", "ResponseId", "DistributionChannel", "UserLanguage", "mTurk", "Q29", "Q30"))
+
+d_exclusion <- d_exclusion[-c(1, 2), ] # remove unnecessary rows
+
+t_d_exclusion <- as.data.frame(t(d_exclusion)) # transpose columns & rows (make data long instead of wide)
+
+for (i in 1:n_participants) { # this for loop recodes male/female to 1/0
+  t_d_exclusion[,i] <- ifelse(t_d_exclusion[,i] == "Male", 1, ifelse(t_d_exclusion[,i] == "Female", 0, 2))
+}
+
+# compare repeat questions check whether intra-rater reliability (Pearson's correlation between 25 repeat questions) is equal to 0, if so will need to exclude
+total_q= 175 # questions are in rows, total # of questions in each version
+
+for(j in 1:n_participants) {
+  #print("working on")
+  #print(j)
+  
+  is_ver1 = !is.na(t_d_exclusion[1,j])
+  k=1
+  temp_frame <- data.frame(matrix(NA, nrow = 25, ncol = 2))
+  for(i in 1:total_q) {
+    if (is_ver1) {
+      init_q = i
+      compare_q = i + total_q
+    } else {
+      init_q = i + 2*total_q
+      compare_q = i + 3*total_q
+    }
+    if(!is.na(t_d_exclusion[compare_q, j])) {
+      temp_frame[k,1] = t_d_exclusion[init_q, j]
+      temp_frame[k,2] = t_d_exclusion[compare_q, j]
+      #print(k)
+      k = k + 1
+    }
+  }
+  coeff = cor(temp_frame[,1], temp_frame[,2], method = "pearson")
+  print(coeff)
+  
+  if(coeff == 0) {
+    print(j)
+  } else {print("acceptable")}
+}
 
 #### Prepare data for analysis - create columns etc.
+filtered_d = d %>% 
+  select(-c("StartDate", "EndDate", "Status", "Progress", "Duration (in seconds)", "Finished", "RecordedDate", "ResponseId", "DistributionChannel", "UserLanguage", "Q29", "Q30", "mTurk"),
+  -contains("Q")) # remove unnecessary columns
+filtered_d <- filtered_d[-c(1, 2), ] # remove unnecessary rows
+t_filtered_d <- as.data.frame(t(filtered_d)) # transpose columns & rows (make data long instead of wide)
+
+n_participants = 3 # number of participants
+for (i in 1:n_participants) { # this for loop recodes male/female to 1/0
+  t_filtered_d[,i] <- ifelse(t_filtered_d[,i] == "Male", 1, ifelse(t_filtered_d[,i] == "Female", 0, 2))
+}
+
+t_filtered_d$image_name <- rownames(t_filtered_d) # copy row names into a column
+t_filtered_d = t_filtered_d %>% 
+  separate(image_name, into = c("condition", "standard_dev")) # create columns for condition (competence & difference models) and standard deviation (1-7 for image manipulation)
+
+t_filtered_d = t_filtered_d %>%
+  mutate(image_id = condition)
+
+n=n_participants
+t_filtered_d[,n+1] <- ifelse(t_filtered_d[,n+1] == "Comp01", "comp", ifelse(t_filtered_d[,n+1] == "Comp02", "comp",                                 ifelse(t_filtered_d[,n+1] == "Comp03", "comp",                                 ifelse(t_filtered_d[,n+1] == "Comp04", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp05", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp06", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp07", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp08", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp09", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp10", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp11", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp12", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp13", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp14", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp15", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp16", "comp",                                 ifelse(t_filtered_d[,n+1] == "Comp17", "comp",                                 ifelse(t_filtered_d[,n+1] == "Comp18", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp19", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp20", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp21", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp22", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp23", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp24", "comp",
+ifelse(t_filtered_d[,n+1] == "Comp25", "comp",
+"diff"))))))))))))))))))))))))) # rename condition variable to be comp/diff
+
+                                                                
+t_filtered_d[,n+2] <- ifelse(t_filtered_d[,n+2] == 1, -3, ifelse(t_filtered_d[,n+2] == 2, -2, ifelse(t_filtered_d[,n+2] == 3, -1, ifelse(t_filtered_d[,n+2] == 4, 0, ifelse(t_filtered_d[,n+2] == 5, 1, ifelse(t_filtered_d[,n+2] == 6, 2, ifelse(t_filtered_d[,n+2] == 7, 3, 4))))))) # recode standard deviation values to be -3 to 3
+
+# create separate dataframes by condition and standard deviation
+## competent
+d_comp_minus3 = t_filtered_d %>%
+  filter(condition == "comp", standard_dev == -3)
+d_comp_minus2 = t_filtered_d %>%
+  filter(condition == "comp", standard_dev == -2)
+d_comp_minus1 = t_filtered_d %>%
+  filter(condition == "comp", standard_dev == -1)
+d_comp_0 = t_filtered_d %>%
+  filter(condition == "comp", standard_dev == 0)
+d_comp_1 = t_filtered_d %>%
+  filter(condition == "comp", standard_dev == 1)
+d_comp_2 = t_filtered_d %>%
+  filter(condition == "comp", standard_dev == 2)
+d_comp_3 = t_filtered_d %>%
+  filter(condition == "comp", standard_dev == 3)
+## difference
+d_diff_minus3 = t_filtered_d %>%
+  filter(condition == "diff", standard_dev == -3)
+d_diff_minus2 = t_filtered_d %>%
+  filter(condition == "diff", standard_dev == -2)
+d_diff_minus1 = t_filtered_d %>%
+  filter(condition == "diff", standard_dev == -1)
+d_diff_0 = t_filtered_d %>%
+  filter(condition == "diff", standard_dev == 0)
+d_diff_1 = t_filtered_d %>%
+  filter(condition == "diff", standard_dev == 1)
+d_diff_2 = t_filtered_d %>%
+  filter(condition == "diff", standard_dev == 2)
+d_diff_3 = t_filtered_d %>%
+  filter(condition == "diff", standard_dev == 3)
+
+# create dataframe to hold values for proportion male responses
+standard_dev <- c(-3, -2, -1, 0, 1, 2, 3)
+prop_male <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+standard_error <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+condition <- c("competence", "competence", "competence", "competence", "competence", "competence", "competence", "difference", "difference", "difference", "difference", "difference", "difference", "difference")
+prop_male <- data.frame(standard_dev, prop_male, standard_error, condition)
+
+# input values into dataframe for proportions of male responses by standard deviation and condition
+
+d_comp_minus3 = d_comp_minus3 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[1,2] = mean(as.matrix(d_comp_minus3), na.rm=T)
+n_comp_minus3 = length(d_comp_minus3[!is.na(d_comp_minus3)])
+prop_male[1,3] = sd(as.matrix(d_comp_minus3), na.rm=T)/sqrt(n_comp_minus3)
+
+d_comp_minus2 = d_comp_minus2 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[2,2] = mean(as.matrix(d_comp_minus2), na.rm=T)
+n_comp_minus2 = length(d_comp_minus2[!is.na(d_comp_minus2)])
+prop_male[2,3] = sd(as.matrix(d_comp_minus2), na.rm=T)/sqrt(n_comp_minus2)
+
+d_comp_minus1 = d_comp_minus1 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[3,2] = mean(as.matrix(d_comp_minus1), na.rm=T)
+n_comp_minus1 = length(d_comp_minus1[!is.na(d_comp_minus1)])
+prop_male[3,3] = sd(as.matrix(d_comp_minus1), na.rm=T)/sqrt(n_comp_minus1)
+
+d_comp_0 = d_comp_0 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[4,2] = mean(as.matrix(d_comp_0), na.rm=T)
+n_comp_0 = length(d_comp_0[!is.na(d_comp_0)])
+prop_male[4,3] = sd(as.matrix(d_comp_0), na.rm=T)/sqrt(n_comp_0)
+
+d_comp_1 = d_comp_1 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[5,2] = mean(as.matrix(d_comp_1), na.rm=T)
+n_comp_1 = length(d_comp_1[!is.na(d_comp_1)])
+prop_male[5,3] = sd(as.matrix(d_comp_1), na.rm=T)/sqrt(n_comp_1)
+
+d_comp_2 = d_comp_2 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[6,2] = mean(as.matrix(d_comp_2), na.rm=T)
+n_comp_2 = length(d_comp_2[!is.na(d_comp_2)])
+prop_male[6,3] = sd(as.matrix(d_comp_2), na.rm=T)/sqrt(n_comp_2)
+
+d_comp_3 = d_comp_3 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[7,2] = mean(as.matrix(d_comp_3), na.rm=T)
+n_comp_3 = length(d_comp_3[!is.na(d_comp_3)])
+prop_male[7,3] = sd(as.matrix(d_comp_3), na.rm=T)/sqrt(n_comp_3)
+
+##difference
+d_diff_minus3 = d_diff_minus3 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[8,2] = mean(as.matrix(d_diff_minus3), na.rm=T)
+n_diff_minus3 = length(d_diff_minus3[!is.na(d_diff_minus3)])
+prop_male[8,3] = sd(as.matrix(d_diff_minus3), na.rm=T)/sqrt(n_diff_minus3)
+
+d_diff_minus2 = d_diff_minus2 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[9,2] = mean(as.matrix(d_diff_minus2), na.rm=T)
+n_diff_minus2 = length(d_diff_minus2[!is.na(d_diff_minus2)])
+prop_male[9,3] = sd(as.matrix(d_diff_minus2), na.rm=T)/sqrt(n_diff_minus2)
+
+d_diff_minus1 = d_diff_minus1 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[10,2] = mean(as.matrix(d_diff_minus1), na.rm=T)
+n_diff_minus1 = length(d_diff_minus1[!is.na(d_diff_minus1)])
+prop_male[10,3] = sd(as.matrix(d_diff_minus1), na.rm=T)/sqrt(n_diff_minus1)
+
+d_diff_0 = d_diff_0 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[11,2] = mean(as.matrix(d_diff_0), na.rm=T)
+n_diff_0 = length(d_diff_0[!is.na(d_diff_0)])
+prop_male[11,3] = sd(as.matrix(d_diff_0), na.rm=T)/sqrt(n_diff_0)
+
+d_diff_1 = d_diff_1 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[12,2] = mean(as.matrix(d_diff_1), na.rm=T)
+n_diff_1 = length(d_diff_1[!is.na(d_diff_1)])
+prop_male[12,3] = sd(as.matrix(d_diff_1), na.rm=T)/sqrt(n_diff_1)
+
+d_diff_2 = d_diff_2 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[13,2] = mean(as.matrix(d_diff_2), na.rm=T)
+n_diff_2 = length(d_diff_2[!is.na(d_diff_2)])
+prop_male[13,3] = sd(as.matrix(d_diff_2), na.rm=T)/sqrt(n_diff_2)
+
+d_diff_3 = d_diff_3 %>% 
+  select(-c("condition", "standard_dev", "image_id"))
+prop_male[14,2] = mean(as.matrix(d_diff_3), na.rm=T)
+n_diff_3 = length(d_diff_3[!is.na(d_diff_3)])
+prop_male[14,3] = sd(as.matrix(d_diff_3), na.rm=T)/sqrt(n_diff_3)
+
+# plot proportion male values as scatter plot
+plot <- ggplot(prop_male, aes(x=standard_dev, y=prop_male, color=condition)) +
+  geom_point() +
+  geom_smooth(method=glm, method.args = list(family="binomial"), se=FALSE) +
+  geom_errorbar(aes(ymin = prop_male - standard_error, ymax = prop_male + standard_error), width=0.2) +
+  xlab("Standard Deviation") +
+  ylab("Proportion of Male Responses")
+
+plot + scale_x_continuous(n.breaks = 7) + scale_y_continuous(n.breaks = 6)
+
 ```
-
-### Confirmatory analysis
-
 The analyses as specified in the analysis plan.  
 
 *Side-by-side graph with original graph is ideal here*
