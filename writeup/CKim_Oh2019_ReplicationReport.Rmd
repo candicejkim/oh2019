@@ -85,7 +85,7 @@ Data preparation following the analysis plan.
 
 ### Confirmatory analysis
 
-```{r include=F}
+```
 ###Data Preparation
 
 ####Load Relevant Libraries and Functions
@@ -95,6 +95,7 @@ library(ggplot2)
 library(reshape)
 library(dplyr)
 library(ggpubr)
+library(rstatix)
 
 ####Import data
 d <- read_csv("Oh2019_PilotA.csv")
@@ -257,10 +258,10 @@ d_diff_3 = t_filtered_d %>%
 
 # create dataframe to hold values for proportion male responses
 standard_dev <- c(-3, -2, -1, 0, 1, 2, 3)
-prop_male <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
+percent_male <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
 standard_error <- c(NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA)
 condition <- c("competence", "competence", "competence", "competence", "competence", "competence", "competence", "difference", "difference", "difference", "difference", "difference", "difference", "difference")
-prop_male <- data.frame(standard_dev, prop_male, standard_error, condition)
+prop_male <- data.frame(standard_dev, percent_male, standard_error, condition)
 
 # input values into dataframe for proportions of male responses by standard deviation and condition
 
@@ -350,14 +351,17 @@ n_diff_3 = length(d_diff_3[!is.na(d_diff_3)])
 prop_male[14,3] = sd(as.matrix(d_diff_3), na.rm=T)/sqrt(n_diff_3)
 
 # plot proportion male values as scatter plot
-plot <- ggplot(prop_male, aes(x=standard_dev, y=prop_male, color=condition)) +
+plot <- ggplot(prop_male, aes(x=standard_dev, y=percent_male, color=condition))   +
   geom_point() +
   geom_smooth(method=glm, method.args = list(family="binomial"), se=FALSE) +
-  geom_errorbar(aes(ymin = prop_male - standard_error, ymax = prop_male + standard_error), width=0.2) +
+  geom_errorbar(aes(ymin = percent_male - standard_error, ymax = percent_male + standard_error), width=0.2) +
   xlab("Standard Deviation") +
   ylab("Proportion of Male Responses")
 
 plot + scale_x_continuous(n.breaks = 7) + scale_y_continuous(n.breaks = 6)
+
+prop_male_aov <- aov(percent_male ~ condition + standard_dev, data = prop_male)
+summary(prop_male_aov) # run within-subjects, repeated measures ANOVA test
 
 ```
 The analyses as specified in the analysis plan.  
