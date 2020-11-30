@@ -20,6 +20,8 @@ This reproduction study will be conducted using Amazon Mechanical Turk (MTurk) t
 
 [Original Paper](https://github.com/candicejkim/oh2019/blob/master/original_paper/Oh_etal_2019.pdf)
 
+[Preregistration](https://osf.io/45emw)
+
 ##Methods
 
 ###Power Analysis
@@ -68,13 +70,11 @@ The procedure, analysis plan, and setting of MTurk will exactly follow the origi
 
 ### Methods Addendum (Post Data Collection)
 
-You can comment this section out prior to final report with data collection.
-
 #### Actual Sample
-  Sample size, demographics, data exclusions based on rules spelled out in analysis plan
+The sample included 30 participants (25 males, 5 females). Participants' age ranged from 22 to 60 years, with an average age of 37.7 years. 3 participants had an intrarater reliability of 0 and were excluded from the study (participants 8, 13, and 30).
 
 #### Differences from pre-data collection methods plan
-  Any differences from what was described as the original plan, or “none”.
+None.
 
 
 ##Results
@@ -85,7 +85,7 @@ Data preparation following the analysis plan.
 
 ### Confirmatory analysis
 
-```
+```{r}
 ###Data Preparation
 
 ####Load Relevant Libraries and Functions
@@ -98,18 +98,16 @@ library(ggpubr)
 library(rstatix)
 
 ####Import data
-d <- read_csv("Oh2019_PilotA.csv")
+d <- read_csv("Oh2019_Final.csv")
 
 #### Demographics
-view(d)
 d_demo = d %>% 
   select(-c("StartDate", "EndDate", "Status", "Progress", "Duration (in seconds)", "Finished", "RecordedDate", "ResponseId", "DistributionChannel", "UserLanguage", "mTurk"))
 
 d_demo <- d_demo[-c(1, 2), ] # remove unnecessary rows
-view(d_demo)
 
 # find number of male and female participants
-n_participants = 3 # number of participants, n=3 for Trial A
+n_participants = 30 # number of participants, n=30 for final data collection
 n_male = 0
 n_female = 0
 for (i in 1:n_participants) { # this for loop recodes male/female to 1/0
@@ -121,11 +119,13 @@ for (i in 1:n_participants) { # this for loop recodes male/female to 1/0
 }
 print(n_male) # number of male participants
 print(n_female) # number of female participants
-
+```
+```{r}
 # calculate range of age (Q29)
 age_range = range(d_demo$Q29) # find min and max age values
 print(age_range) # print range
-
+```
+```{r}
 # calculate mean of age (Q29)
 age_df <- data.frame(matrix(NA, nrow = n_participants, ncol = 1))
 for (i in 1:n_participants) { # this for loop recodes male/female to 1/0
@@ -133,7 +133,8 @@ for (i in 1:n_participants) { # this for loop recodes male/female to 1/0
 }
 
 mean(as.numeric(age_df[,1])) # convert strings into numbers, then report mean
-
+```
+```{r}
 #### Data exclusion / filtering
 d_exclusion = d %>% 
   select(-c("StartDate", "EndDate", "Status", "Progress", "Duration (in seconds)", "Finished", "RecordedDate", "ResponseId", "DistributionChannel", "UserLanguage", "mTurk", "Q29", "Q30"))
@@ -173,20 +174,18 @@ for(j in 1:n_participants) {
   }
   coeff = cor(temp_frame[,1], temp_frame[,2], method = "pearson")
   print(coeff)
-  
-  if(coeff == 0) {
-    print(j)
-  } else {print("acceptable")}
+  print(j) # prints row number
 }
+```
+```{r}
+d_exclusion <- d_exclusion[-c(8, 13, 30), ] # exclude participants in rows 8, 13, and 30
 
 #### Prepare data for analysis - create columns etc.
-filtered_d = d %>% 
-  select(-c("StartDate", "EndDate", "Status", "Progress", "Duration (in seconds)", "Finished", "RecordedDate", "ResponseId", "DistributionChannel", "UserLanguage", "Q29", "Q30", "mTurk"),
-  -contains("Q")) # remove unnecessary columns
-filtered_d <- filtered_d[-c(1, 2), ] # remove unnecessary rows
+filtered_d = d_exclusion %>% 
+  select(-contains("Q")) # remove unnecessary columns
 t_filtered_d <- as.data.frame(t(filtered_d)) # transpose columns & rows (make data long instead of wide)
 
-n_participants = 3 # number of participants
+n_participants = 27 # number of participants after exclusion
 for (i in 1:n_participants) { # this for loop recodes male/female to 1/0
   t_filtered_d[,i] <- ifelse(t_filtered_d[,i] == "Male", 1, ifelse(t_filtered_d[,i] == "Female", 0, 2))
 }
@@ -220,11 +219,10 @@ ifelse(t_filtered_d[,n+1] == "Comp23", "comp",
 ifelse(t_filtered_d[,n+1] == "Comp24", "comp",
 ifelse(t_filtered_d[,n+1] == "Comp25", "comp",
 "diff"))))))))))))))))))))))))) # rename condition variable to be comp/diff
-
                                                                 
 t_filtered_d[,n+2] <- ifelse(t_filtered_d[,n+2] == 1, -3, ifelse(t_filtered_d[,n+2] == 2, -2, ifelse(t_filtered_d[,n+2] == 3, -1, ifelse(t_filtered_d[,n+2] == 4, 0, ifelse(t_filtered_d[,n+2] == 5, 1, ifelse(t_filtered_d[,n+2] == 6, 2, ifelse(t_filtered_d[,n+2] == 7, 3, 4))))))) # recode standard deviation values to be -3 to 3
 
-# create separate dataframes by condition and standard deviation
+# create separate data frames by condition and standard deviation
 ## competent
 d_comp_minus3 = t_filtered_d %>%
   filter(condition == "comp", standard_dev == -3)
@@ -359,25 +357,22 @@ plot <- ggplot(prop_male, aes(x=standard_dev, y=percent_male, color=condition)) 
   ylab("Proportion of Male Responses")
 
 plot + scale_x_continuous(n.breaks = 7) + scale_y_continuous(n.breaks = 6)
-
+```
+```{r}
 prop_male_aov <- aov(percent_male ~ condition + standard_dev, data = prop_male)
 summary(prop_male_aov) # run within-subjects, repeated measures ANOVA test
-
 ```
-The analyses as specified in the analysis plan.  
-
-*Side-by-side graph with original graph is ideal here*
 
 ###Exploratory analyses
-
-Any follow-up analyses desired (not required).  
+No follow-up analyses conducted. 
 
 ## Discussion
 
 ### Summary of Replication Attempt
+The primary result from the confirmatory analysis was the replication of Fig. 4 from the original study. The replicated figure showed that for images manipulated to look more competent, by both the competence and difference models, were more likely to be categorized as male. This effect was more pronounced for images that were manipulated by the difference model (controlling for attractiveness) than the competence model. The figure fully replicated the original study's figure.
 
-Open the discussion section with a paragraph summarizing the primary result from the confirmatory analysis and the assessment of whether it replicated, partially replicated, or failed to replicate the original result.  
+An additional analysis conducted was a repeated measures ANOVA on the proportion of "male" responses for each face, comparing when faces were manipulated by the competence model versus the difference model. The results demonstrated that perceived gender varied significantly as only a function of manipulation level (standard deviation) but not the type of model (condition). The original study found that the perceived gender varied as a function of both. As such, the findings only partially replicated for this analysis.
+
 
 ### Commentary
-
-Add open-ended commentary (if any) reflecting (a) insights from follow-up exploratory analysis, (b) assessment of the meaning of the replication (or not) - e.g., for a failure to replicate, are the differences between original and present study ones that definitely, plausibly, or are unlikely to have been moderators of the result, and (c) discussion of any objections or challenges raised by the current and original authors about the replication attempt.  None of these need to be long.
+I did not conduct any follow-up exploratory analysis because the original analysis plan was sufficient, with the primary figure replicating. As previously discussed in class, I believe this study replicated closely to the original study because the study design involved a within subject design with a high number of trials (175 images per participant). The original authors provided their manipulated images on OSF and detailed their study paradigm suffiently clearly in the manuscript, allowing for a close replication of the original study design. In all, this project demonstrated to me the value of open science practices in being able to support replication.
